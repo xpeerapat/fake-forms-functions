@@ -28,11 +28,11 @@ app.post('/', async (req, res) => {
 
 });
 
-exports.spam = functions.https.onRequest(app);
+// exports.spam = functions.https.onRequest(app);
 
-// app.listen(3000, function () {
-//     console.log(`CORS-enabled web server listening on port 3000`)
-// })
+app.listen(3000, function () {
+    console.log(`CORS-enabled web server listening on port 3000`)
+})
 
 async function ghostIt(form, xlData) {
 
@@ -53,27 +53,25 @@ async function ghostIt(form, xlData) {
 
     // init dataObj
     let dataObj = {}
-    let xlColumn = Object.keys(xlData.at(0))
+    let xlColumn = xlData.at(0)
     for (let i = 0; i < xlColumn.length; i++) {
         dataObj[xlColumn[i]] = 'entry.' + fieldsId[i]
     }
-    console.log(dataObj);
 
     // submit
     let errorCount = 0
     let errorAtRow = []
-    for (let i = 0; i < xlData.length; i++) {
+    for (let i = 1; i < xlData.length; i++) {
 
         let userForm = {}
-        let myKey = Object.keys(dataObj)
-        let myValue = Object.values(dataObj)
+        let entryId = Object.values(dataObj)
 
-        for (let j = 0; j < myKey.length; j++) {
-            let x = xlData[i][myKey[j]]
-            if (x == '-') {
+        for (let j = 0; j < entryId.length; j++) {
+            let data = xlData[i][j]
+            if (data == '-') {
                 //do nothing
             } else {
-                userForm[myValue[j]] = x
+                userForm[entryId[j]] = data
             }
         }
 
