@@ -75,19 +75,25 @@ async function ghostIt(form, xlData) {
             }
         }
 
-        request
-            .post(`https://docs.google.com/forms/d/e/${formId}/formResponse`)
-            .type('form')
-            .send(userForm)
-            .end(function (err, res) {
-                if (err || !res.ok) {
-                    errorAtRow.push(i + 1)
-                    errorCount += 1
-                    console.error('error : ', err);
-                } else {
-                    console.log('::: success :::');
-                }
-            });
+        try {
+            const res = await request
+                .post(`https://docs.google.com/forms/d/e/${formId}/formResponse`)
+                .type('form')
+                .send(userForm);
+
+            if (!res.ok) {
+                errorAtRow.push(i + 1);
+                errorCount += 1;
+                console.error('error : ', res.error);
+            } else {
+                console.log('::: success :::');
+            }
+
+        } catch (err) {
+            errorAtRow.push(i + 1);
+            errorCount += 1;
+            console.error('error : ', err);
+        }
 
     }
 
